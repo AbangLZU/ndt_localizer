@@ -1,0 +1,36 @@
+<launch>
+
+  <!-- Topics -->
+  <arg name="input_sensor_points_topic" default="/filtered_points" doc="Sensor points topic"/>
+  <arg name="input_initial_pose_topic" default="/ekf_pose_with_covariance" doc="Initial position topic to align" />
+  <arg name="input_map_points_topic" default="/points_map" doc="Map points topic" />
+  <arg name="output_pose_topic" default="ndt_pose" doc="Estimated self position" />
+  <arg name="output_pose_with_covariance_topic" default="ndt_pose_with_covariance" doc="Estimated self position with covariance" />
+  <arg name="output_diagnostics_topic" default="diagnostics" doc="Diagnostic topic" />
+
+  <!-- tf -->
+  <arg name="base_frame" default="base_link" doc="Vehicle reference frame" />
+
+  <arg name="trans_epsilon" default="0.01" doc="The maximum difference between two consecutive transformations in order to consider convergence" />
+  <arg name="step_size" default="0.1" doc="The newton line search maximum step length" />
+  <arg name="resolution" default="2.0" doc="The ND voxel grid resolution" />
+  <arg name="max_iterations" default="30.0" doc="The number of iterations required to calculate alignment" />
+  <arg name="converged_param_transform_probability" default="3.0" doc="" />
+
+  <node pkg="ndt_scan_matcher" type="ndt_scan_matcher" name="$(arg node_name)" output="log">
+
+    <remap from="points_raw" to="$(arg input_sensor_points_topic)" />
+    <remap from="ekf_pose_with_covariance" to="$(arg input_initial_pose_topic)" />
+    <remap from="pointcloud_map" to="$(arg input_map_points_topic)" />
+    <remap from="ndt_pose" to="$(arg output_pose_topic)" />
+    <remap from="ndt_pose_with_covariance" to="$(arg output_pose_with_covariance_topic)" />
+    <remap from="diagnostics" to="$(arg output_diagnostics_topic)" />
+    <param name="base_frame" value="$(arg base_frame)" />
+    <param name="trans_epsilon" value="$(arg trans_epsilon)" />
+    <param name="step_size" value="$(arg step_size)" />
+    <param name="resolution" value="$(arg resolution)" />
+    <param name="max_iterations" value="$(arg max_iterations)" />
+    <param name="converged_param_transform_probability" value="$(arg converged_param_transform_probability)" />
+  </node>
+
+</launch>

@@ -3,9 +3,16 @@ project(ndt_localizer)
 
 find_package(catkin REQUIRED COMPONENTS
         roscpp
-        pcl_ros
+        tf2
+        tf2_ros
+        tf2_geometry_msgs
+        std_msgs
+        geometry_msgs
         sensor_msgs
+        nav_msgs
+        diagnostic_msgs
         pcl_conversions
+        pcl_ros
         message_generation
         )
 
@@ -17,13 +24,22 @@ generate_messages(
 find_package(PCL REQUIRED QUIET)
 
 catkin_package(
+        INCLUDE_DIRS include
         CATKIN_DEPENDS
         roscpp
-        pcl_ros
+        tf2
+        tf2_ros
+        tf2_geometry_msgs
+        geometry_msgs
         sensor_msgs
+        nav_msgs
+        diagnostic_msgs
         pcl_conversions
+        pcl_ros
         message_generation
 )
+
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 ###########
 ## Build ##
@@ -40,3 +56,6 @@ target_link_libraries(voxel_grid_filter ${catkin_LIBRARIES})
 
 add_executable(map_loader nodes/mapLoader.cpp)
 target_link_libraries(map_loader ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+add_executable(ndt_localizer_node nodes/ndt.cpp)
+target_link_libraries(ndt_localizer_node ${catkin_LIBRARIES} ${PCL_LIBRARIES})
