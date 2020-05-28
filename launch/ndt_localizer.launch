@@ -17,7 +17,7 @@
   <arg name="max_iterations" default="30.0" doc="The number of iterations required to calculate alignment" />
   <arg name="converged_param_transform_probability" default="3.0" doc="" />
 
-  <node pkg="ndt_scan_matcher" type="ndt_scan_matcher" name="$(arg node_name)" output="log">
+  <node pkg="ndt_localizer" type="ndt_localizer_node" name="ndt_localizer_node" output="log">
 
     <remap from="points_raw" to="$(arg input_sensor_points_topic)" />
     <remap from="ekf_pose_with_covariance" to="$(arg input_initial_pose_topic)" />
