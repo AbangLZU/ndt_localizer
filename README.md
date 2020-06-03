@@ -4,5 +4,9 @@ This repo modified from Autoware lidar_localizer module. Unlike the module in Au
 
 Let's start our lidar-based localization learning with this simple repo!
 
+
+## Localization in a pointcloud map(pcd)
+![](cfgs/ndt_result.gif)
+
 ## How to use
 Will update soon.
