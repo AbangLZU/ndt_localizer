@@ -51,6 +51,7 @@ private:
     pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt_;
 
     tf2_ros::Buffer tf2_buffer_;
+    tf2_ros::TransformListener tf2_listener_;
     tf2_ros::TransformBroadcaster tf2_broadcaster_;
 
     Eigen::Matrix4f base_to_sensor_matrix_;

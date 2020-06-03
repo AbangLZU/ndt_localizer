@@ -5,6 +5,8 @@ MapLoader::MapLoader(ros::NodeHandle &nh){
     nh.param<std::string>("pcd_path", pcd_file_path, "");
     nh.param<std::string>("map_topic", map_topic, "point_map");
 
+    init_tf_params(nh);
+
     pc_map_pub_ = nh.advertise<sensor_msgs::PointCloud2>(map_topic, 10, true);
 
     file_list_.push_back(pcd_file_path);
@@ -20,19 +22,25 @@ MapLoader::MapLoader(ros::NodeHandle &nh){
 
 }
 
+void MapLoader::init_tf_params(ros::NodeHandle &nh){
+    nh.param<float>("x", tf_x_, 0.0);
+    nh.param<float>("y", tf_y_, 0.0);
+    nh.param<float>("z", tf_z_, 0.0);
+    nh.param<float>("roll", tf_roll_, 0.0);
+    nh.param<float>("pitch", tf_pitch_, 0.0);
+    nh.param<float>("yaw", tf_yaw_, 0.0);
+}
+
 sensor_msgs::PointCloud2 MapLoader::TransformMap(sensor_msgs::PointCloud2 & in){
     pcl::PointCloud<pcl::PointXYZ>::Ptr in_pc(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(in, *in_pc);
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_pc_ptr(new pcl::PointCloud<pcl::PointXYZ>);
 
-    double _tf_roll = 1.570795;
-    double _tf_pitch = 0.0;
-    double _tf_yaw = 1.570795;
-    Eigen::Translation3f tl_m2w(0.0, 0.0, 0.0);                 // tl: translation
-    Eigen::AngleAxisf rot_x_m2w(_tf_roll, Eigen::Vector3f::UnitX());  // rot: rotation
-    Eigen::AngleAxisf rot_y_m2w(_tf_pitch, Eigen::Vector3f::UnitY());
-    Eigen::AngleAxisf rot_z_m2w(_tf_yaw, Eigen::Vector3f::UnitZ());
+    Eigen::Translation3f tl_m2w(tf_x_, tf_y_, tf_z_);                 // tl: translation
+    Eigen::AngleAxisf rot_x_m2w(tf_roll_, Eigen::Vector3f::UnitX());  // rot: rotation
+    Eigen::AngleAxisf rot_y_m2w(tf_pitch_, Eigen::Vector3f::UnitY());
+    Eigen::AngleAxisf rot_z_m2w(tf_yaw_, Eigen::Vector3f::UnitZ());
     Eigen::Matrix4f tf_m2w = (tl_m2w * rot_z_m2w * rot_y_m2w * rot_x_m2w).matrix();
 
     pcl::transformPointCloud(*in_pc, *transformed_pc_ptr, tf_m2w);

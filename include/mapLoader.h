@@ -20,6 +20,10 @@ public:
     MapLoader(ros::NodeHandle &nh);
 
 private:
+
+    float tf_x_, tf_y_, tf_z_, tf_roll_, tf_pitch_, tf_yaw_; 
+
+    void init_tf_params(ros::NodeHandle &nh);
     sensor_msgs::PointCloud2 CreatePcd();
     sensor_msgs::PointCloud2 TransformMap(sensor_msgs::PointCloud2 & in);
     void SaveMap(const pcl::PointCloud<pcl::PointXYZ>::Ptr map_pc_ptr);

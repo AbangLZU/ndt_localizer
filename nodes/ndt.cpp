@@ -1,6 +1,6 @@
 #include "ndt.h"
 
-NdtLocalizer::NdtLocalizer(ros::NodeHandle &nh, ros::NodeHandle &private_nh):nh_(nh), private_nh_(private_nh){
+NdtLocalizer::NdtLocalizer(ros::NodeHandle &nh, ros::NodeHandle &private_nh):nh_(nh), private_nh_(private_nh), tf2_listener_(tf2_buffer_){
 
   key_value_stdmap_["state"] = "Initializing";
   init_params();
@@ -197,6 +197,16 @@ void NdtLocalizer::callback_pointcloud(
   }
   // calculate the delta tf from pre_trans to current_trans
   delta_trans = pre_trans.inverse() * result_pose_matrix;
+
+  Eigen::Vector3f delta_translation = delta_trans.block<3, 1>(0, 3);
+  std::cout<<"delta x: "<<delta_translation(0) << " y: "<<delta_translation(1)<<
+             " z: "<<delta_translation(2)<<std::endl;
+
+  Eigen::Matrix3f delta_rotation_matrix = delta_trans.block<3, 3>(0, 0);
+  Eigen::Vector3f delta_euler = delta_rotation_matrix.eulerAngles(2,1,0);
+  std::cout<<"delta yaw: "<<delta_euler(0) << " pitch: "<<delta_euler(1)<<
+             " roll: "<<delta_euler(2)<<std::endl;
+
   pre_trans = result_pose_matrix;
   
   // publish
@@ -263,6 +273,8 @@ void NdtLocalizer::init_params(){
   private_nh_.getParam("resolution", resolution);
   private_nh_.getParam("max_iterations", max_iterations);
 
+  map_frame_ = "map";
+
   ndt_.setTransformationEpsilon(trans_epsilon);
   ndt_.setStepSize(step_size);
   ndt_.setResolution(resolution);
@@ -297,7 +309,7 @@ bool NdtLocalizer::get_transform(
 
   try {
     *transform_stamped_ptr =
-      tf2_buffer_.lookupTransform(target_frame, source_frame, time_stamp, ros::Duration(1.0));
+      tf2_buffer_.lookupTransform(target_frame, source_frame, time_stamp);
   } catch (tf2::TransformException & ex) {
     ROS_WARN("%s", ex.what());
     ROS_ERROR("Please publish TF %s to %s", target_frame.c_str(), source_frame.c_str());

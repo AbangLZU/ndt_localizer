@@ -1,7 +1,7 @@
 <launch>
   <arg name="sync" default="false" />
   <arg name="node_name" default="voxel_grid_filter" />
-  <arg name="points_topic" default="velodyne_points" />
+  <arg name="points_topic" default="/apollo/sensor/velodyne32/PointCloud2/fusion" />
   <arg name="output_log" default="false" />
   <arg name="leaf_size" default="3.0" />
 

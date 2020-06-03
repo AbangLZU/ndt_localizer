@@ -1,16 +1,30 @@
 <launch>
     
     <!--- Sim Time -->
-    <param name="/use_sim_time" value="false" />
+    <!-- <param name="/use_sim_time" value="false" /> -->
+    <param name="roll" value="0.0" />
+    <param name="pitch" value="0.0" />
+    <param name="yaw" value="0.0" />
+    <param name="x" value="0.0" />
+    <param name="y" value="0.0" />
+    <param name="z" value="0.0" />
+
+
+    <!-- <param name="roll" value="1.570795" />
+    <param name="pitch" value="0.0" />
+    <param name="yaw" value="1.570795" />
+    <param name="x" value="0.0" />
+    <param name="y" value="0.0" />
+    <param name="z" value="0.0" /> -->
 
     <!--- Run Rviz-->
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find ndt_localizer)/cfgs/rock-auto.rviz" />
 
     <!--- MapLoader -->    
     <arg name="pcd_path"  default="$(find ndt_localizer)/map/yz_without_imu.pcd"/>
-    <arg name="map_topic" default="/point_map"/>
+    <arg name="map_topic" default="/points_map"/>
 
-    <node pkg="ndt_localizer" type="mapLoader"    name="mapLoader"    output="screen">
+    <node pkg="ndt_localizer" type="map_loader"    name="map_loader"    output="screen">
         <param name="pcd_path" value="$(arg pcd_path)"/>
         <param name="map_topic" value="$(arg map_topic)"/>
     </node>
