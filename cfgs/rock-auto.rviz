@@ -28,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: ""
   - Class: jsk_rviz_plugin/YesNoButton
     Name: YesNoButton
 Preferences:
@@ -63,9 +63,9 @@ Visualization Manager:
         All Enabled: true
         base_link:
           Value: true
-        left_front_frame:
-          Value: true
         map:
+          Value: true
+        ouster:
           Value: true
         world:
           Value: true
@@ -76,9 +76,6 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          base_link:
-            left_front_frame:
-              {}
           world:
             {}
       Update Interval: 0
@@ -188,7 +185,7 @@ Visualization Manager:
       Size (Pixels): 1
       Size (m): 0.009999999776482582
       Style: Points
-      Topic: /apollo/sensor/velodyne32/PointCloud2/fusion
+      Topic: /os1_points
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -250,7 +247,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: 0
+      Angle: 0.009999999776482582
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -260,11 +257,11 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 12.220499992370605
+      Scale: 37.40846252441406
       Target Frame: base_link
       Value: TopDownOrtho (rviz)
-      X: 12.147355079650879
-      Y: -13.628829002380371
+      X: 1.4703627824783325
+      Y: 0.07238966226577759
     Saved: ~
 Window Geometry:
   Displays:
