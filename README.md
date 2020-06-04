@@ -10,10 +10,6 @@ Let's start our lidar-based localization learning with this simple repo!
 
 A demo video on MulRan dataset:
 
-<video id="video" controls="" preload="none" >
-      <source id="mp4" src="https://youtu.be/qhqDmmO7c4c" type="video/mp4">
-      <p>Your user agent does not support the HTML5 Video element.</p>
-    </video>
-    
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qhqDmmO7c4c/0.jpg)](https://www.youtube.com/watch?v=qhqDmmO7c4c)
 ## How to use
 Will update soon.
