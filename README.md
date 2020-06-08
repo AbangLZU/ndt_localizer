@@ -11,5 +11,132 @@ Let's start our lidar-based localization learning with this simple repo!
 A demo video on MulRan dataset:
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qhqDmmO7c4c/0.jpg)](https://www.youtube.com/watch?v=qhqDmmO7c4c)
+
 ## How to use
-Will update soon.
+### Build in your ros workspace
+clone this repo in your `ros workspace/src/`, and then `catkin_make` (or `catkin build`):
+```bash
+cd catkin_ws/src/
+git clone https://github.com/AbangLZU/ndt_localizer.git
+cd ..
+catkin_make
+```
+
+### Get a pcd map
+You need a point cloud map (pcd format) for localization. You can get a HD point cloud map from any HD map supplier, or you can make one yourself (of course, the accuracy will not be as high as the HD map). 
+
+make a point cloud by yourself, you can ref my blog: https://blog.csdn.net/AdamShan/article/details/106589633 (Chinese) and https://blog.csdn.net/AdamShan/article/details/106319382 (Chinese). 
+
+The code to produce a pcd map:  https://github.com/AbangLZU/SC-LeGO-LOAM
+
+### Setup configuration
+
+#### Config map loader
+Move your map pcd file (.pcd) to the map folder inside this project (`ndt_localizer/map`), change the pcd_path in `map_loader.launch` to you pcd path, for example:
+
+```xml
+<arg name="pcd_path"  default="$(find ndt_localizer)/map/kaist02.pcd"/>
+```
+#### Config point cloud downsample
+
+Config your Lidar point cloud topic in `launch/points_downsample.launch`:
+
+```xml
+<arg name="points_topic" default="/os1_points" />
+```
+
+If your Lidar data is sparse (like VLP-16), you need to config smaller `leaf_size` in `launch/points_downsample.launch` like `2.0`. If your lidar point cloud is dense (VLP-32, Hesai Pander40P, HDL-64 ect.), keep `leaf_size` as `3.0`。
+
+#### Config static tf
+
+There are two static transform in this project: `base_link_to_localizer` and `world_to_map`，replace the `ouster` with your lidar frame id if you are using a different lidar:
+
+```xml
+<node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_localizer" args="0 0 0 0 0 0 base_link ouster"/>
+```
+
+#### Config ndt localizer
+You can config NDT params in `ndt_localizer.launch`. Tha main params of NDT algorithm is:
+
+```xml
+<arg name="trans_epsilon" default="0.05" doc="The maximum difference between two consecutive transformations in order to consider convergence" />
+<arg name="step_size" default="0.1" doc="The newton line search maximum step length" />
+<arg name="resolution" default="2.0" doc="The ND voxel grid resolution" />
+<arg name="max_iterations" default="30.0" doc="The number of iterations required to calculate alignment" />
+<arg name="converged_param_transform_probability" default="3.0" doc="" />
+```
+
+These default params work nice with 64 and 32 lidar.
+
+### Run the localizer
+Once you get your pcd map and configuration ready, run the localizer with:
+
+```bash
+cd catkin_ws
+source devel/setup.bash
+roslaunch ndt_localizer ndt_localizer.launch
+```
+
+wait a few seconds for loading map, then you can see your pcd map in rviz like this:
+
+![](cfgs/sample_img_1.png)
+
+give a init pose of current vehicle with 2D Pose Estimate in the rviz:
+
+![](cfgs/sample_img3.jpg)
+
+This operation will send a init pose to topic `/initialpose`.Then you will see the localization result:
+
+![](cfgs/sample_img2.png)
+
+The final localization msg will send to `/ndt_pose` topic:
+
+```proto
+---
+header: 
+  seq: 1867
+  stamp: 
+    secs: 1566536121
+    nsecs: 251423898
+  frame_id: "map"
+pose: 
+  position: 
+    x: -94.8022766113
+    y: 544.097351074
+    z: 42.5747337341
+  orientation: 
+    x: 0.0243843578881
+    y: 0.0533175268768
+    z: -0.702325920272
+    w: 0.709437048124
+---
+```
+
+The localizer also publish a tf of `base_link` to `map`:
+
+```
+---
+transforms: 
+  - 
+    header: 
+      seq: 0
+      stamp: 
+        secs: 1566536121
+        nsecs: 251423898
+      frame_id: "map"
+    child_frame_id: "base_link"
+    transform: 
+      translation: 
+        x: -94.8022766113
+        y: 544.097351074
+        z: 42.5747337341
+      rotation: 
+        x: 0.0243843578881
+        y: 0.0533175268768
+        z: -0.702325920272
+        w: 0.709437048124
+```
+
+
+### Want to know more detail?
+You can follow my blog series in CSDN (Chinese): https://blog.csdn.net/adamshan
