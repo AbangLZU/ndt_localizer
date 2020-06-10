@@ -85,6 +85,8 @@ void NdtLocalizer::callback_init_pose(
     // mapTF_initial_pose_msg_ptr->header.stamp = initial_pose_msg_ptr->header.stamp;
     initial_pose_cov_msg_ = *mapTF_initial_pose_msg_ptr;
   }
+  // if click the initpose again, re init！
+  init_pose = false;
 }
 
 void NdtLocalizer::callback_pointsmap(

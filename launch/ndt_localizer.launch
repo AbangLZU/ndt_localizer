@@ -39,4 +39,6 @@
     <param name="converged_param_transform_probability" value="$(arg converged_param_transform_probability)" />
   </node>
 
+  <include file="$(find ndt_localizer)/launch/lexus.launch" />
+
 </launch>
