@@ -83,7 +83,7 @@ wait a few seconds for loading map, then you can see your pcd map in rviz like t
 
 give a init pose of current vehicle with 2D Pose Estimate in the rviz:
 
-![](cfgs/sample_img3.jpg)
+![](cfgs/sample_img3.png)
 
 This operation will send a init pose to topic `/initialpose`.Then you will see the localization result:
 
