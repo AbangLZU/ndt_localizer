@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<robot name="jaguar_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+    
+    <xacro:property name="PI" value="3.1415926535897931" />
+
+    <!-- The base_link is assumed to be defined as the geometric center point of the side panel of the robot -->
+    <link name="base_link"/>
+
+    <!-- IMU -->
+    <link name="imu_link"/>
+    <joint name="imu_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0.14653 0 0.34964"/>
+        <parent link="base_link"/>
+        <child link="imu_link"/>
+    </joint>
+
+    <!-- OS1 lidar -->
+    <link name="os_sensor"/>
+    <joint name="os_sensor_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.01936 0 0.64805"/>
+        <parent link="base_link"/>
+        <child link="os_sensor"/>
+    </joint>
+
+     <!-- Zed2 -->
+     <link name="zed2_camera_center"/>
+     <joint name="zed2_camera_joint" type="fixed">
+         <origin rpy="0 0 0" xyz="0.21866 0 0.34919"/>
+         <parent link="base_link"/>
+         <child link="zed2_camera_center"/>
+     </joint>
+</robot>

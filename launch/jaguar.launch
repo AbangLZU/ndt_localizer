@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="robot_description" command="$(find xacro)/xacro $(find ndt_localizer)/urdf/jaguar.urdf --inorder" />
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="state_publisher" output="screen" />
+    
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
+        <rosparam command="load" file="$(find ndt_localizer)/cfgs/robot_localization.yaml" />
+    </node>
+
+</launch>
