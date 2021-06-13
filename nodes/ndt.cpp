@@ -78,7 +78,7 @@ void NdtLocalizer::callback_init_pose(
     geometry_msgs::TransformStamped::Ptr TF_pose_to_map_ptr(new geometry_msgs::TransformStamped);
     get_transform(map_frame_, initial_pose_msg_ptr->header.frame_id, TF_pose_to_map_ptr);
 
-    cout<<"initial pose frame if" << initial_pose_msg_ptr->header.frame_id<<endl;
+    std::cout<<"initial pose frame if" << initial_pose_msg_ptr->header.frame_id<<std::endl;
 
     // transform pose_frame to map_frame
     geometry_msgs::PoseWithCovarianceStamped::Ptr mapTF_initial_pose_msg_ptr(

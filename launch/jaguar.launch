@@ -1,11 +1,34 @@
 <?xml version="1.0"?>
 <launch>
-
-  <param name="robot_description" command="$(find xacro)/xacro $(find ndt_localizer)/urdf/jaguar.urdf --inorder" />
+    <!--robot state publisher-->
+    <param name="robot_description" command="$(find xacro)/xacro $(find ndt_localizer)/urdf/jaguar.urdf --inorder" />
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="state_publisher" output="screen" />
-    
+
+    <!--imu and odometry-->
+    <!-- Local EKF -->
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization">
-        <rosparam command="load" file="$(find ndt_localizer)/cfgs/robot_localization.yaml" />
+        <rosparam command="load" file="$(find ndt_localizer)/cfgs/local_ekf.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered/local" />
+    </node>
+
+    <!-- Global EKF  -->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_localization_global">
+        <rosparam command="load" file="$(find ndt_localizer)/cfgs/global_ekf.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered/global" />
+    </node>
+
+    <!-- gps -->
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_node" respawn="true">
+       <rosparam param="wait_for_datum">true</rosparam>
+       <rosparam param="datum">[50.7894803, -0.9132029, 0.0]</rosparam>
+
+       <param name="magnetic_declination_radians" value="0"/>
+
+       <param name="yaw_offset" value="0"/>
+
+       <remap from="/imu/data" to="/imu/data" />
+       <remap from="/gps/fix" to="/gnss" />
+       <remap from="/odometry/filtered" to="/odometry/filtered/global" />
     </node>
 
 </launch>
