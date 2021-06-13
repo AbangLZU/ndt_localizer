@@ -60,6 +60,7 @@ private:
 
     std::string base_frame_;
     std::string map_frame_;
+    std::string odom_frame_;
 
     // init guess for ndt
     geometry_msgs::PoseWithCovarianceStamped initial_pose_cov_msg_;

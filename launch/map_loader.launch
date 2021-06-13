@@ -21,7 +21,7 @@
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find ndt_localizer)/cfgs/jaguar.rviz" />
 
     <!--- MapLoader -->    
-    <arg name="pcd_path"  default="$(find ndt_localizer)/map/beach_map.pcd"/>
+    <arg name="pcd_path"  default="$(find ndt_localizer)/map/court_yard_map.pcd"/>
     <!-- <arg name="pcd_path"  default="/media/rdcas/dataset/map_result/kaist02.pcd"/> -->
     
     <arg name="map_topic" default="/points_map"/>
