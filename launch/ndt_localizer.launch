@@ -19,7 +19,7 @@
 
   <arg name="trans_epsilon" default="0.05" doc="The maximum difference between two consecutive transformations in order to consider convergence" />
   <arg name="step_size" default="0.1" doc="The newton line search maximum step length" />
-  <arg name="resolution" default="2.0" doc="The ND voxel grid resolution" />
+  <arg name="resolution" default="3.0" doc="The ND voxel grid resolution" />
   <arg name="max_iterations" default="30.0" doc="The number of iterations required to calculate alignment" />
   <arg name="converged_param_transform_probability" default="3.0" doc="" />
 

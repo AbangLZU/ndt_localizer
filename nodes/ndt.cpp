@@ -137,7 +137,7 @@ void NdtLocalizer::callback_pointcloud(
 
   // get TF odom to base
   geometry_msgs::TransformStamped::Ptr TF_odom_to_base_ptr(new geometry_msgs::TransformStamped);
-  get_transform(odom_frame_, base_frame_, TF_odom_to_base_ptr);
+  get_transform(odom_frame_, base_frame_, TF_odom_to_base_ptr, sensor_ros_time);
 
   const Eigen::Affine3d odom_to_base_affine = tf2::transformToEigen(*TF_odom_to_base_ptr);
   const Eigen::Matrix4f odom_to_base_matrix = odom_to_base_affine.matrix().cast<float>();
@@ -177,11 +177,27 @@ void NdtLocalizer::callback_pointcloud(
   {
     // use predicted pose as init guess (currently we only impl linear model)
     initial_pose_matrix = pre_trans * delta_trans;
-    /*geometry_msgs::TransformStamped::Ptr TF_map_to_base_ptr(new geometry_msgs::TransformStamped);
-    get_transform(map_frame_, base_frame_, TF_map_to_base_ptr);
+    /*geometry_msgs::TransformStamped::Ptr TF_base_to_map_ptr(new geometry_msgs::TransformStamped);
+    bool is_available = get_transform(map_frame_, base_frame_, TF_base_to_map_ptr, sensor_ros_time);
 
-    const Eigen::Affine3d map_to_base_affine = tf2::transformToEigen(*TF_map_to_base_ptr);
-    initial_pose_matrix = map_to_base_affine.matrix().cast<float>();*/
+    if(is_available) {
+      ROS_INFO("found transform");
+      const Eigen::Affine3d base_to_map_affine = tf2::transformToEigen(*TF_base_to_map_ptr);
+      initial_pose_matrix = base_to_map_affine.matrix().cast<float>();
+    }
+    else {
+      ROS_ERROR("cannot found transform");
+      initial_pose_matrix = pre_trans * delta_trans;
+    }
+
+    Eigen::Vector3f init_translation = initial_pose_matrix.block<3, 1>(0, 3);
+    std::cout<<"intial x: "<<init_translation(0) << " y: "<<init_translation(1)<<
+             " z: "<<init_translation(2)<<std::endl;
+
+    Eigen::Matrix3f init_rotation_matrix = initial_pose_matrix.block<3, 3>(0, 0);
+    Eigen::Vector3f init_euler = init_rotation_matrix.eulerAngles(2,1,0);
+    std::cout<<"intial yaw: "<<init_euler(0) << " pitch: "<<init_euler(1)<<
+              " roll: "<<init_euler(2)<<std::endl;*/
   }
   
   pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
@@ -341,7 +357,7 @@ bool NdtLocalizer::get_transform(
 
   try {
     *transform_stamped_ptr =
-      tf2_buffer_.lookupTransform(target_frame, source_frame, time_stamp);
+      tf2_buffer_.lookupTransform(target_frame, source_frame, time_stamp, ros::Duration(1.0));
   } catch (tf2::TransformException & ex) {
     ROS_WARN("%s", ex.what());
     ROS_ERROR("Please publish TF %s to %s", target_frame.c_str(), source_frame.c_str());
