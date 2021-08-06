@@ -13,6 +13,23 @@ A demo video on MulRan dataset:
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/qhqDmmO7c4c/0.jpg)](https://www.youtube.com/watch?v=qhqDmmO7c4c)
 
 ## How to use
+
+### Prepare you pcd map and rosbag
+
+You can reproduce my blog [基于NDT的自动驾驶高精度定位和ROS项目实战](https://blog.csdn.net/AdamShan/article/details/106739856?spm=1001.2014.3001.5501) and [使用SC-LEGO-LOAM进行较大规模点云地图构建和闭环优化](https://blog.csdn.net/AdamShan/article/details/106589633?spm=1001.2014.3001.5501) to use Mulran dataset to build your pcd map and produce the pointcloud data. Unfortunately, the blog is written with Chinese, if you can not read Chinese blog and want to reproduce the project demo, use the link below(Baidu disk) to download the pcd map and rosbag:
+
+link: https://pan.baidu.com/s/1hZ0VuQCy4KX3lHUTFdVeww  passward: r7fl
+
+![](cfgs/4.png)
+
+> The KAIST02-small.bag is not the whole KAIST02 dataset, because the rosbag do not compress data, the whole KAIST02 rosbag is too large. So I use the first 81 seconds of the KAIST02 dataset to make this small rosbag.
+
+Put the pcd data to the map folder:
+
+```bash
+cp kaist02.pcd map/
+```
+
 ### Build in your ros workspace
 clone this repo in your `ros workspace/src/`, and then `catkin_make` (or `catkin build`):
 ```bash
@@ -21,13 +38,6 @@ git clone https://github.com/AbangLZU/ndt_localizer.git
 cd ..
 catkin_make
 ```
-
-### Get a pcd map
-You need a point cloud map (pcd format) for localization. You can get a HD point cloud map from any HD map supplier, or you can make one yourself (of course, the accuracy will not be as high as the HD map). 
-
-make a point cloud by yourself, you can ref my blog: https://blog.csdn.net/AdamShan/article/details/106589633 (Chinese) and https://blog.csdn.net/AdamShan/article/details/106319382 (Chinese). 
-
-The code to produce a pcd map:  https://github.com/AbangLZU/SC-LeGO-LOAM
 
 ### Setup configuration
 
@@ -71,9 +81,16 @@ These default params work nice with 64 and 32 lidar.
 ### Run the localizer
 Once you get your pcd map and configuration ready, run the localizer with:
 
+
 ```bash
+# open a roscore
+roscore
+# in other terminal
 cd catkin_ws
 source devel/setup.bash
+# use rosbag sim time if you are playing a rosbag!!!
+rosparam set use_sim_time true
+# launch the ndt_localizer node
 roslaunch ndt_localizer ndt_localizer.launch
 ```
 
@@ -85,7 +102,16 @@ give a init pose of current vehicle with 2D Pose Estimate in the rviz:
 
 ![](cfgs/sample_img3.png)
 
-This operation will send a init pose to topic `/initialpose`.Then you will see the localization result:
+
+This operation will send a init pose to topic `/initialpose`.
+
+play the rosbag:
+
+```bash
+rosbag play KAIST02-small.bag --clock
+```
+
+Then you will see the localization result:
 
 ![](cfgs/sample_img2.png)
 
