@@ -19,16 +19,12 @@ static std::ofstream ofs;
 static std::string filename;
 
 static std::string POINTS_TOPIC;
-static double measurement_range = MAX_MEASUREMENT_RANGE;
 
 static void scan_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 {
   pcl::PointCloud<pcl::PointXYZ> scan;
   pcl::fromROSMsg(*input, scan);
-
-  if(measurement_range != MAX_MEASUREMENT_RANGE){
-    scan = removePointsByRange(scan, 0, measurement_range);
-  }
+  scan = removePointsByRange(scan, 0, MAX_MEASUREMENT_RANGE);
 
   pcl::PointCloud<pcl::PointXYZ>::Ptr scan_ptr(new pcl::PointCloud<pcl::PointXYZ>(scan));
   pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_scan_ptr(new pcl::PointCloud<pcl::PointXYZ>());
