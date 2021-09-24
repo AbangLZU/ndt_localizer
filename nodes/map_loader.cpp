@@ -1,4 +1,4 @@
-#include "mapLoader.h"
+#include "map_loader.h"
 
 MapLoader::MapLoader(ros::NodeHandle &nh){
     std::string pcd_file_path, map_topic;

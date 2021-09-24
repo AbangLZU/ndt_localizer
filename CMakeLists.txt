@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ndt_localizer)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(catkin REQUIRED COMPONENTS
         roscpp
@@ -50,13 +50,13 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 include_directories(include ${catkin_INCLUDE_DIRS})
 SET(CMAKE_CXX_FLAGS "-O2 -g -Wall ${CMAKE_CXX_FLAGS}")
 
-add_executable(voxel_grid_filter nodes/voxel_grid_filter.cpp)
+add_executable(voxel_grid_filter nodes/points_downsampler.cpp)
 
 add_dependencies(voxel_grid_filter ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(voxel_grid_filter ${catkin_LIBRARIES})
 
-add_executable(map_loader nodes/mapLoader.cpp)
+add_executable(map_loader nodes/map_loader.cpp)
 target_link_libraries(map_loader ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 add_executable(ndt_localizer_node nodes/ndt.cpp)

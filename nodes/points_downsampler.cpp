@@ -5,7 +5,7 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/filters/voxel_grid.h>
 
-#include "points_downsampler.h"
+// #include "points_downsampler.h"
 
 #define MAX_MEASUREMENT_RANGE 120.0
 
@@ -19,6 +19,32 @@ static std::ofstream ofs;
 static std::string filename;
 
 static std::string POINTS_TOPIC;
+
+static pcl::PointCloud<pcl::PointXYZ> removePointsByRange(pcl::PointCloud<pcl::PointXYZ> scan, double min_range, double max_range)
+{
+  pcl::PointCloud<pcl::PointXYZ> narrowed_scan;
+  narrowed_scan.header = scan.header;
+
+  if( min_range>=max_range ) {
+    ROS_ERROR_ONCE("min_range>=max_range @(%lf, %lf)", min_range, max_range );
+    return scan;
+  }
+
+  double square_min_range = min_range * min_range;
+  double square_max_range = max_range * max_range;
+
+  for(pcl::PointCloud<pcl::PointXYZ>::const_iterator iter = scan.begin(); iter != scan.end(); ++iter)
+  {
+    const pcl::PointXYZ &p = *iter;
+    double square_distance = p.x * p.x + p.y * p.y;
+
+    if(square_min_range <= square_distance && square_distance <= square_max_range){
+      narrowed_scan.points.push_back(p);
+    }
+  }
+
+  return narrowed_scan;
+}
 
 static void scan_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 {
